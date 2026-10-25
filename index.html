@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSB Fisika Ultimate</title>
-<!-- Tambahan Library Tesseract.js buat baca gambar -->
-<script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+<title>MSB Fisika AI</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Share Tech Mono', monospace; }
@@ -15,45 +13,38 @@
   .container { max-width: 700px; margin: auto; }
   h1 { text-align: center; font-size: 24px; color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.5); margin-bottom: 5px; }
   .subtitle { text-align: center; font-size: 11px; color: #884444; margin-bottom: 20px; letter-spacing: 1px;}
-  
-  /* OCR BOX */
-  .ocr-box { background: rgba(20,0,0,0.8); border: 1px dashed #ef4444; padding: 15px; margin-bottom: 20px; text-align: center; }
-  .ocr-box p { font-size: 12px; color: #aa8888; margin-bottom: 10px; }
+  .ai-box { background: rgba(20,0,0,0.8); border: 1px dashed #ef4444; padding: 20px; margin-bottom: 20px; text-align: center; }
+  .ai-box p { font-size: 13px; color: #aa8888; margin-bottom: 10px; }
   input[type="file"] { display: none; }
-  .btn-upload { background: #ef4444; color: #0a0000; padding: 10px 20px; cursor: pointer; font-weight: bold; font-size: 14px; border: none; display: inline-block;}
-  .ocr-result { margin-top: 10px; font-size: 14px; color: #4ade80; word-break: break-all; }
-
-  .search-box { width: 100%; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid #ef4444; color: #fff; font-size: 14px; margin-bottom: 20px; outline: none; border-radius: 4px;}
-  .search-box:focus { box-shadow: 0 0 10px rgba(239,68,68,0.5); }
-  
+  .btn-upload { background: #ef4444; color: #0a0000; padding: 12px 20px; cursor: pointer; font-weight: bold; font-size: 14px; border: none; display: inline-block;}
+  .btn-upload:hover { background: #ff6666; }
+  .ai-result { margin-top: 15px; font-size: 14px; color: #4ade80; text-align: left; white-space: pre-wrap; background: rgba(0,0,0,0.5); padding: 15px; border-left: 2px solid #4ade80; display: none;}
+  .ai-result.error { border-left-color: #ff0000; color: #ff0000; }
   .tool-card { background: rgba(20,0,0,0.8); border: 1px solid #3f1d1d; padding: 20px; margin-bottom: 15px; border-left: 4px solid #ef4444; }
-  .tool-card h2 { font-size: 14px; color: #ef4444; margin-bottom: 15px; border-bottom: 1px dashed #3f1d1d; padding-bottom: 8px; text-transform: uppercase;}
+  .tool-card h2 { font-size: 14px; color: #ef4444; margin-bottom: 15px; border-bottom: 1px dashed #3f1d1d; padding-bottom: 8px;}
   .input-group { margin-bottom: 12px; }
   label { font-size: 11px; color: #aa8888; display: block; margin-bottom: 5px; text-transform: uppercase;}
   input[type="number"] { width: 100%; padding: 12px; background: transparent; border: 1px solid #3f1d1d; color: #fff; font-size: 14px; }
   input[type="number"]:focus { outline: none; border-color: #ef4444; background: #1f0808;}
   button.hitung { width: 100%; background: #ef4444; color: #0a0000; border: none; padding: 12px; cursor: pointer; font-weight: bold; margin-top: 8px; font-size: 14px; }
-  button.hitung:hover { background: #ff6666; box-shadow: 0 0 15px rgba(239,68,68,0.4); }
+  button.hitung:hover { background: #ff6666; }
   .hasil { background: rgba(0,0,0,0.6); padding: 12px; border-left: 2px solid #4ade80; margin-top: 15px; font-size: 14px; color: #4ade80; word-break: break-all; }
   .hasil.error { border-left-color: #ff0000; color: #ff0000; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>MSB FISIKA ULTIMATE</h1>
-  <p class="subtitle">FISIKA & MATEMATIKA // CRIMSON EDITION</p>
+  <h1>MSB FISIKA AI</h1>
+  <p class="subtitle">FISIKA CERDAS // CRIMSON EDITION</p>
 
-  <!-- FITUR BARU: BACA GAMBAR -->
-  <div class="ocr-box">
-    <p>📸 Baca Soal dari Gambar (OCR)</p>
+  <div class="ai-box">
+    <p>🤖 Upload Foto Soal, AI Langsung Jawab!</p>
     <label for="imageUpload" class="btn-upload">Pilih Gambar Soal</label>
-    <input type="file" id="imageUpload" accept="image/*" onchange="prosesGambar(event)">
-    <div class="ocr-result" id="ocrOutput"></div>
+    <input type="file" id="imageUpload" accept="image/*" onchange="tanyaAI(event)">
+    <div class="ai-result" id="aiOutput"></div>
   </div>
 
-  <input type="text" class="search-box" id="searchInput" placeholder="🔍 Cari rumus (misal: newton, listrik)..." onkeyup="cariRumus()">
-
-  <div class="tool-card" data-nama="kecepatan fisika">
+  <div class="tool-card">
     <h2>01 // KECEPATAN SUATU BENDA (FISIKA)</h2>
     <div class="input-group"><label>Jarak (s) [m]</label><input type="number" id="v-s"></div>
     <div class="input-group"><label>Waktu (t) [s]</label><input type="number" id="v-t"></div>
@@ -61,55 +52,60 @@
     <div class="hasil" id="out-v">> Standby...</div>
   </div>
 
-  <div class="tool-card" data-nama="gaya newton fisika">
+  <div class="tool-card">
     <h2>03 // GAYA NEWTON (FISIKA)</h2>
     <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="f-m"></div>
     <div class="input-group"><label>Percepatan (a) [m/s²]</label><input type="number" id="f-a"></div>
     <button class="hitung" onclick="hitungF()">HITUNG</button>
     <div class="hasil" id="out-f">> Standby...</div>
   </div>
-
-  <div class="tool-card" data-nama="ohm listrik fisika">
-    <h2>12 // HUKUM OHM (FISIKA)</h2>
-    <div class="input-group"><label>Arus (I) [Ampere]</label><input type="number" id="ohm-i"></div>
-    <div class="input-group"><label>Hambatan (R) [Ohm]</label><input type="number" id="ohm-r"></div>
-    <button class="hitung" onclick="hitungOhm()">HITUNG</button>
-    <div class="hasil" id="out-ohm">> Standby...</div>
-  </div>
 </div>
 
 <script>
-  // --- FITUR OCR (BACA GAMBAR) ---
-  function prosesGambar(event) {
+  // ⚠️ PASTE API KEY LU DI ANTARA TANDA KUTIP DI BAWAH INI ⚠️
+  const GEMINI_API_KEY = "AQ.Ab8RN6Iwqs6lsoQTEVuJkmxoiTtWZ-SzvCbt2HvBQ2-wJZIWwg";
+  
+  async function tanyaAI(event) {
     const file = event.target.files[0];
     if (!file) return;
-    const output = document.getElementById('ocrOutput');
-    output.innerHTML = "⏳ Sedang membaca gambar... (mohon tunggu)";
-    
-    Tesseract.recognize(file, 'eng+ind', {
-      logger: m => console.log(m)
-    }).then(({ data: { text } }) => {
-      output.innerHTML = "📝 Teks Terbaca: <br><b>" + text + "</b>";
-    }).catch(err => {
-      output.innerHTML = "❌ Gagal membaca gambar.";
-    });
+    const output = document.getElementById('aiOutput');
+    output.style.display = 'block';
+    output.classList.remove('error');
+    output.innerHTML = "⏳ AI sedang membaca dan menghitung... (mohon tunggu 5-10 detik)";
+
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64Data = reader.result.split(',')[1];
+        const mimeType = file.type;
+        const payload = {
+          contents: [{
+            parts: [
+              { text: "Kamu adalah guru fisika. Baca soal di gambar ini, lalu berikan jawaban yang benar beserta rumus dan langkah-langkah pengerjaannya secara singkat dan jelas." },
+              { inline_data: { mime_type: mimeType, data: base64Data } }
+            ]
+          }]
+        };
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (data.error) {
+          output.classList.add('error');
+          output.innerHTML = "❌ Error API: " + data.error.message;
+        } else {
+          output.innerHTML = "🤖 <b>Jawaban AI:</b><br><br>" + data.candidates[0].content.parts[0].text;
+        }
+      };
+    } catch (err) {
+      output.classList.add('error');
+      output.innerHTML = "❌ Gagal memproses gambar.";
+    }
   }
 
-  // --- FITUR PENCARIAN ---
-  function cariRumus() {
-    let input = document.getElementById('searchInput').value.toLowerCase();
-    document.querySelectorAll('.tool-card').forEach(card => {
-      let nama = card.getAttribute('data-nama').toLowerCase();
-      let judul = card.querySelector('h2').innerText.toLowerCase();
-      if(nama.includes(input) || judul.includes(input)) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  }
-
-  // --- LOGIKA HITUNG ---
   function val(id) { const x = parseFloat(document.getElementById(id).value); return isNaN(x) ? null : x; }
   function show(id, text, isErr = false) {
     const el = document.getElementById(id);
@@ -125,11 +121,6 @@
     let m = val('f-m'), a = val('f-a');
     if(m===null || a===null) return show('out-f', 'INVALID INPUT!', true);
     show('out-f', `F = ${(m*a).toFixed(2)} Newton`);
-  }
-  function hitungOhm() {
-    let i = val('ohm-i'), r = val('ohm-r');
-    if(i===null || r===null) return show('out-ohm', 'INVALID INPUT!', true);
-    show('out-ohm', `V = ${(i*r).toFixed(2)} Volt`);
   }
 </script>
 </body>
