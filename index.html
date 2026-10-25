@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSB Fisika Ultimate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Share Tech Mono', monospace; }
+  body { background-color: #0a0000; color: #ffffff; padding: 20px; min-height: 100vh;
+    background-image: linear-gradient(rgba(239,68,68,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.05) 1px, transparent 1px);
+    background-size: 20px 20px; }
+  .container { max-width: 700px; margin: auto; }
+  h1 { text-align: center; font-size: 24px; color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.5); margin-bottom: 5px; }
+  .subtitle { text-align: center; font-size: 11px; color: #884444; margin-bottom: 20px; letter-spacing: 1px;}
+  .search-box { width: 100%; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid #ef4444; color: #fff; font-size: 14px; margin-bottom: 20px; outline: none; border-radius: 4px;}
+  .search-box:focus { box-shadow: 0 0 10px rgba(239,68,68,0.5); }
+  .tool-card { background: rgba(20,0,0,0.8); border: 1px solid #3f1d1d; padding: 20px; margin-bottom: 15px; border-left: 4px solid #ef4444; display: none; }
+  .tool-card.active { display: block; }
+  .tool-card h2 { font-size: 14px; color: #ef4444; margin-bottom: 15px; border-bottom: 1px dashed #3f1d1d; padding-bottom: 8px;}
+  .input-group { margin-bottom: 12px; }
+  label { font-size: 11px; color: #aa8888; display: block; margin-bottom: 5px; text-transform: uppercase;}
+  input { width: 100%; padding: 12px; background: transparent; border: 1px solid #3f1d1d; color: #fff; font-size: 14px; }
+  input:focus { outline: none; border-color: #ef4444; background: #1f0808;}
+  button.hitung { width: 100%; background: #ef4444; color: #0a0000; border: none; padding: 12px; cursor: pointer; font-weight: bold; margin-top: 8px; font-size: 14px; }
+  button.hitung:hover { background: #ff6666; box-shadow: 0 0 15px rgba(239,68,68,0.4); }
+  .hasil { background: rgba(0,0,0,0.6); padding: 12px; border-left: 2px solid #4ade80; margin-top: 15px; font-size: 14px; color: #4ade80; word-break: break-all; }
+  .hasil.error { border-left-color: #ff0000; color: #ff0000; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>MSB FISIKA ULTIMATE</h1>
+  <p class="subtitle">LENGKAP & CEPAT // CRIMSON EDITION</p>
+  <input type="text" class="search-box" id="searchInput" placeholder="🔍 Cari rumus (misal: newton, listrik)..." onkeyup="cariRumus()">
+
+  <div class="tool-card active" data-nama="kecepatan kinematika">
+    <h2>01 // KECEPATAN (v = s/t)</h2>
+    <div class="input-group"><label>Jarak (s) [m]</label><input type="number" id="v-s"></div>
+    <div class="input-group"><label>Waktu (t) [s]</label><input type="number" id="v-t"></div>
+    <button class="hitung" onclick="hitungV()">HITUNG</button>
+    <div class="hasil" id="out-v">> Standby...</div>
+  </div>
+
+  <div class="tool-card active" data-nama="gaya newton">
+    <h2>03 // GAYA NEWTON (F = m · a)</h2>
+    <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="f-m"></div>
+    <div class="input-group"><label>Percepatan (a) [m/s²]</label><input type="number" id="f-a"></div>
+    <button class="hitung" onclick="hitungF()">HITUNG</button>
+    <div class="hasil" id="out-f">> Standby...</div>
+  </div>
+
+  <div class="tool-card active" data-nama="ohm listrik">
+    <h2>12 // HUKUM OHM (V = I · R)</h2>
+    <div class="input-group"><label>Arus (I) [Ampere]</label><input type="number" id="ohm-i"></div>
+    <div class="input-group"><label>Hambatan (R) [Ohm]</label><input type="number" id="ohm-r"></div>
+    <button class="hitung" onclick="hitungOhm()">HITUNG</button>
+    <div class="hasil" id="out-ohm">> Standby...</div>
+  </div>
+</div>
+
+<script>
+  function cariRumus() {
+    let input = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.tool-card').forEach(card => {
+      let nama = card.getAttribute('data-nama').toLowerCase();
+      card.style.display = nama.includes(input) ? 'block' : 'none';
+    });
+  }
+  function val(id) { const x = parseFloat(document.getElementById(id).value); return isNaN(x) ? null : x; }
+  function show(id, text, isErr = false) {
+    const el = document.getElementById(id);
+    el.innerHTML = "> " + text;
+    el.className = isErr ? "hasil error" : "hasil";
+  }
+  function hitungV() {
+    let s = val('v-s'), t = val('v-t');
+    if(s===null || t===null || t===0) return show('out-v', 'INVALID (t≠0)!', true);
+    show('out-v', `v = ${(s/t).toFixed(2)} m/s`);
+  }
+  function hitungF() {
+    let m = val('f-m'), a = val('f-a');
+    if(m===null || a===null) return show('out-f', 'INVALID INPUT!', true);
+    show('out-f', `F = ${(m*a).toFixed(2)} Newton`);
+  }
+  function hitungOhm() {
+    let i = val('ohm-i'), r = val('ohm-r');
+    if(i===null || r===null) return show('out-ohm', 'INVALID INPUT!', true);
+    show('out-ohm', `V = ${(i*r).toFixed(2)} Volt`);
+  }
+</script>
+</body>
+</html>
