@@ -15,8 +15,7 @@
   .subtitle { text-align: center; font-size: 11px; color: #884444; margin-bottom: 20px; letter-spacing: 1px;}
   .search-box { width: 100%; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid #ef4444; color: #fff; font-size: 14px; margin-bottom: 20px; outline: none; border-radius: 4px;}
   .search-box:focus { box-shadow: 0 0 10px rgba(239,68,68,0.5); }
-  .tool-card { background: rgba(20,0,0,0.8); border: 1px solid #3f1d1d; padding: 20px; margin-bottom: 15px; border-left: 4px solid #ef4444; display: none; }
-  .tool-card.active { display: block; }
+  .tool-card { background: rgba(20,0,0,0.8); border: 1px solid #3f1d1d; padding: 20px; margin-bottom: 15px; border-left: 4px solid #ef4444; display: block; }
   .tool-card h2 { font-size: 14px; color: #ef4444; margin-bottom: 15px; border-bottom: 1px dashed #3f1d1d; padding-bottom: 8px;}
   .input-group { margin-bottom: 12px; }
   label { font-size: 11px; color: #aa8888; display: block; margin-bottom: 5px; text-transform: uppercase;}
@@ -31,10 +30,10 @@
 <body>
 <div class="container">
   <h1>MSB FISIKA ULTIMATE</h1>
-  <p class="subtitle">LENGKAP & CEPAT // CRIMSON EDITION</p>
+  <p class="subtitle">15 RUMUS LENGKAP // CRIMSON EDITION</p>
   <input type="text" class="search-box" id="searchInput" placeholder="🔍 Cari rumus (misal: newton, listrik)..." onkeyup="cariRumus()">
 
-  <div class="tool-card active" data-nama="kecepatan kinematika">
+  <div class="tool-card" data-nama="kecepatan kinematika">
     <h2>01 // KECEPATAN (v = s/t)</h2>
     <div class="input-group"><label>Jarak (s) [m]</label><input type="number" id="v-s"></div>
     <div class="input-group"><label>Waktu (t) [s]</label><input type="number" id="v-t"></div>
@@ -42,7 +41,16 @@
     <div class="hasil" id="out-v">> Standby...</div>
   </div>
 
-  <div class="tool-card active" data-nama="gaya newton">
+  <div class="tool-card" data-nama="percepatan kinematika">
+    <h2>02 // PERCEPATAN (a = Δv/t)</h2>
+    <div class="input-group"><label>Kecepatan Akhir (v) [m/s]</label><input type="number" id="a-v"></div>
+    <div class="input-group"><label>Kecepatan Awal (v₀) [m/s]</label><input type="number" id="a-v0"></div>
+    <div class="input-group"><label>Waktu (t) [s]</label><input type="number" id="a-t"></div>
+    <button class="hitung" onclick="hitungA()">HITUNG</button>
+    <div class="hasil" id="out-a">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="gaya newton dinamika">
     <h2>03 // GAYA NEWTON (F = m · a)</h2>
     <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="f-m"></div>
     <div class="input-group"><label>Percepatan (a) [m/s²]</label><input type="number" id="f-a"></div>
@@ -50,13 +58,103 @@
     <div class="hasil" id="out-f">> Standby...</div>
   </div>
 
-  <div class="tool-card active" data-nama="ohm listrik">
+  <div class="tool-card" data-nama="energi kinetik gerak">
+    <h2>04 // ENERGI KINETIK (Ek = ½mv²)</h2>
+    <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="ek-m"></div>
+    <div class="input-group"><label>Kecepatan (v) [m/s]</label><input type="number" id="ek-v"></div>
+    <button class="hitung" onclick="hitungEk()">HITUNG</button>
+    <div class="hasil" id="out-ek">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="energi potensial gravitasi">
+    <h2>05 // ENERGI POTENSIAL (Ep = mgh)</h2>
+    <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="ep-m"></div>
+    <div class="input-group"><label>Gravitasi (g) [m/s²]</label><input type="number" id="ep-g" value="9.8"></div>
+    <div class="input-group"><label>Ketinggian (h) [m]</label><input type="number" id="ep-h"></div>
+    <button class="hitung" onclick="hitungEp()">HITUNG</button>
+    <div class="hasil" id="out-ep">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="usaha kerja">
+    <h2>06 // USAHA (W = F · s)</h2>
+    <div class="input-group"><label>Gaya (F) [N]</label><input type="number" id="w-f"></div>
+    <div class="input-group"><label>Jarak (s) [m]</label><input type="number" id="w-s"></div>
+    <button class="hitung" onclick="hitungW()">HITUNG</button>
+    <div class="hasil" id="out-w">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="daya power">
+    <h2>07 // DAYA (P = W/t)</h2>
+    <div class="input-group"><label>Usaha (W) [J]</label><input type="number" id="p-w"></div>
+    <div class="input-group"><label>Waktu (t) [s]</label><input type="number" id="p-t"></div>
+    <button class="hitung" onclick="hitungP()">HITUNG</button>
+    <div class="hasil" id="out-p">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="tekanan pressure">
+    <h2>08 // TEKANAN (P = F/A)</h2>
+    <div class="input-group"><label>Gaya (F) [N]</label><input type="number" id="pr-f"></div>
+    <div class="input-group"><label>Luas (A) [m²]</label><input type="number" id="pr-a"></div>
+    <button class="hitung" onclick="hitungPr()">HITUNG</button>
+    <div class="hasil" id="out-pr">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="massa jenis densitas fluida">
+    <h2>09 // MASSA JENIS (ρ = m/V)</h2>
+    <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="rho-m"></div>
+    <div class="input-group"><label>Volume (V) [m³]</label><input type="number" id="rho-v"></div>
+    <button class="hitung" onclick="hitungRho()">HITUNG</button>
+    <div class="hasil" id="out-rho">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="suhu termodinamika celcius">
+    <h2>10 // KONVERSI SUHU (°C)</h2>
+    <div class="input-group"><label>Celsius (°C)</label><input type="number" id="suhu-c"></div>
+    <button class="hitung" onclick="konversiSuhu()">HITUNG</button>
+    <div class="hasil" id="out-suhu">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="kalor panas">
+    <h2>11 // KALOR (Q = m · c · ΔT)</h2>
+    <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="q-m"></div>
+    <div class="input-group"><label>Kalor Jenis (c) [J/kg°C]</label><input type="number" id="q-c"></div>
+    <div class="input-group"><label>Perubahan Suhu (ΔT) [°C]</label><input type="number" id="q-dt"></div>
+    <button class="hitung" onclick="hitungQ()">HITUNG</button>
+    <div class="hasil" id="out-q">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="ohm listrik">
     <h2>12 // HUKUM OHM (V = I · R)</h2>
     <div class="input-group"><label>Arus (I) [Ampere]</label><input type="number" id="ohm-i"></div>
     <div class="input-group"><label>Hambatan (R) [Ohm]</label><input type="number" id="ohm-r"></div>
     <button class="hitung" onclick="hitungOhm()">HITUNG</button>
     <div class="hasil" id="out-ohm">> Standby...</div>
   </div>
+
+  <div class="tool-card" data-nama="daya listrik watt">
+    <h2>13 // DAYA LISTRIK (P = V · I)</h2>
+    <div class="input-group"><label>Tegangan (V) [Volt]</label><input type="number" id="pl-v"></div>
+    <div class="input-group"><label>Arus (I) [Ampere]</label><input type="number" id="pl-i"></div>
+    <button class="hitung" onclick="hitungPl()">HITUNG</button>
+    <div class="hasil" id="out-pl">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="gelombang frekuensi">
+    <h2>14 // GELOMBANG (v = λ · f)</h2>
+    <div class="input-group"><label>Panjang Gelombang (λ) [m]</label><input type="number" id="gel-l"></div>
+    <div class="input-group"><label>Frekuensi (f) [Hz]</label><input type="number" id="gel-f"></div>
+    <button class="hitung" onclick="hitungGel()">HITUNG</button>
+    <div class="hasil" id="out-gel">> Standby...</div>
+  </div>
+
+  <div class="tool-card" data-nama="momentum impuls">
+    <h2>15 // MOMENTUM (p = m · v)</h2>
+    <div class="input-group"><label>Massa (m) [kg]</label><input type="number" id="mom-m"></div>
+    <div class="input-group"><label>Kecepatan (v) [m/s]</label><input type="number" id="mom-v"></div>
+    <button class="hitung" onclick="hitungMom()">HITUNG</button>
+    <div class="hasil" id="out-mom">> Standby...</div>
+  </div>
+
 </div>
 
 <script>
@@ -64,30 +162,37 @@
     let input = document.getElementById('searchInput').value.toLowerCase();
     document.querySelectorAll('.tool-card').forEach(card => {
       let nama = card.getAttribute('data-nama').toLowerCase();
-      card.style.display = nama.includes(input) ? 'block' : 'none';
+      let judul = card.querySelector('h2').innerText.toLowerCase();
+      if(nama.includes(input) || judul.includes(input)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
     });
   }
+
   function val(id) { const x = parseFloat(document.getElementById(id).value); return isNaN(x) ? null : x; }
   function show(id, text, isErr = false) {
     const el = document.getElementById(id);
     el.innerHTML = "> " + text;
     el.className = isErr ? "hasil error" : "hasil";
   }
-  function hitungV() {
-    let s = val('v-s'), t = val('v-t');
-    if(s===null || t===null || t===0) return show('out-v', 'INVALID (t≠0)!', true);
-    show('out-v', `v = ${(s/t).toFixed(2)} m/s`);
-  }
-  function hitungF() {
-    let m = val('f-m'), a = val('f-a');
-    if(m===null || a===null) return show('out-f', 'INVALID INPUT!', true);
-    show('out-f', `F = ${(m*a).toFixed(2)} Newton`);
-  }
-  function hitungOhm() {
-    let i = val('ohm-i'), r = val('ohm-r');
-    if(i===null || r===null) return show('out-ohm', 'INVALID INPUT!', true);
-    show('out-ohm', `V = ${(i*r).toFixed(2)} Volt`);
-  }
+
+  function hitungV() { let s = val('v-s'), t = val('v-t'); if(s===null || t===null || t===0) return show('out-v', 'INVALID (t≠0)!', true); show('out-v', `v = ${(s/t).toFixed(2)} m/s`); }
+  function hitungA() { let v = val('a-v'), v0 = val('a-v0'), t = val('a-t'); if(v===null || v0===null || t===null || t===0) return show('out-a', 'INVALID (t≠0)!', true); show('out-a', `a = ${((v-v0)/t).toFixed(2)} m/s²`); }
+  function hitungF() { let m = val('f-m'), a = val('f-a'); if(m===null || a===null) return show('out-f', 'INVALID INPUT!', true); show('out-f', `F = ${(m*a).toFixed(2)} Newton`); }
+  function hitungEk() { let m = val('ek-m'), v = val('ek-v'); if(m===null || v===null) return show('out-ek', 'INVALID INPUT!', true); show('out-ek', `Ek = ${(0.5*m*v*v).toFixed(2)} Joule`); }
+  function hitungEp() { let m = val('ep-m'), g = val('ep-g'), h = val('ep-h'); if(m===null || g===null || h===null) return show('out-ep', 'INVALID INPUT!', true); show('out-ep', `Ep = ${(m*g*h).toFixed(2)} Joule`); }
+  function hitungW() { let f = val('w-f'), s = val('w-s'); if(f===null || s===null) return show('out-w', 'INVALID INPUT!', true); show('out-w', `W = ${(f*s).toFixed(2)} Joule`); }
+  function hitungP() { let w = val('p-w'), t = val('p-t'); if(w===null || t===null || t===0) return show('out-p', 'INVALID (t≠0)!', true); show('out-p', `P = ${(w/t).toFixed(2)} Watt`); }
+  function hitungPr() { let f = val('pr-f'), a = val('pr-a'); if(f===null || a===null || a===0) return show('out-pr', 'INVALID (A≠0)!', true); show('out-pr', `P = ${(f/a).toFixed(2)} Pascal`); }
+  function hitungRho() { let m = val('rho-m'), v = val('rho-v'); if(m===null || v===null || v===0) return show('out-rho', 'INVALID (V≠0)!', true); show('out-rho', `ρ = ${(m/v).toFixed(2)} kg/m³`); }
+  function konversiSuhu() { let c = val('suhu-c'); if(c===null) return show('out-suhu', 'INVALID INPUT!', true); show('out-suhu', `F: ${((c*9/5)+32).toFixed(1)}°F | K: ${(c+273.15).toFixed(2)}K`); }
+  function hitungQ() { let m = val('q-m'), c = val('q-c'), dt = val('q-dt'); if(m===null || c===null || dt===null) return show('out-q', 'INVALID INPUT!', true); show('out-q', `Q = ${(m*c*dt).toFixed(2)} Joule`); }
+  function hitungOhm() { let i = val('ohm-i'), r = val('ohm-r'); if(i===null || r===null) return show('out-ohm', 'INVALID INPUT!', true); show('out-ohm', `V = ${(i*r).toFixed(2)} Volt`); }
+  function hitungPl() { let v = val('pl-v'), i = val('pl-i'); if(v===null || i===null) return show('out-pl', 'INVALID INPUT!', true); show('out-pl', `P = ${(v*i).toFixed(2)} Watt`); }
+  function hitungGel() { let l = val('gel-l'), f = val('gel-f'); if(l===null || f===null) return show('out-gel', 'INVALID INPUT!', true); show('out-gel', `v = ${(l*f).toFixed(2)} m/s`); }
+  function hitungMom() { let m = val('mom-m'), v = val('mom-v'); if(m===null || v===null) return show('out-mom', 'INVALID INPUT!', true); show('out-mom', `p = ${(m*v).toFixed(2)} kg·m/s`); }
 </script>
 </body>
 </html>
