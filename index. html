@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSB // CyberTools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #0a0000;
+    --text: #ffffff;
+    --accent: #ef4444;
+    --border: #3f1d1d;
+    --hover: #1f0808;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Share Tech Mono', monospace; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    min-height: 100vh;
+    background-image:
+      linear-gradient(rgba(239, 68, 68, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(239, 68, 68, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: scanline 8s linear infinite;
+  }
+
+  @keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 20px; }
+  }
+
+  .container { max-width: 700px; margin: auto; position: relative; }
+
+  /* HEADER GLITCH MERAH */
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 4px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    position: relative;
+    animation: fadeIn 1s ease-out;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: #884444;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    animation: fadeIn 1.5s ease-out;
+  }
+
+  /* KATEGORI */
+  .kategori { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;}
+  .btn-kat {
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+    padding: 8px 15px; cursor: pointer; font-size: 13px; letter-spacing: 1px;
+    transition: all 0.3s ease;
+  }
+  .btn-kat:hover, .btn-kat.active { background: var(--accent); color: var(--bg); box-shadow: 0 0 10px var(--accent);}
+
+  /* TOOL CARD */
+  .tool-card {
+    display: none; background: rgba(20, 0, 0, 0.8); border: 1px solid var(--border);
+    padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden;
+  }
+  .tool-card.active { display: block; animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+  .tool-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent);
+  }
+  .tool-card h2 { font-size: 15px; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px dashed var(--border); padding-bottom: 8px; color: var(--accent);}
+
+  /* INPUTS */
+  .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .input-group { flex: 1; }
+  label { font-size: 11px; color: #aa8888; display: block; margin-bottom: 5px; text-transform: uppercase;}
+  input, textarea {
+    width: 100%; padding: 10px; background: transparent; border: 1px solid var(--border);
+    color: var(--text); font-size: 14px; transition: 0.3s;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); background: var(--hover); }
+
+  /* BUTTON */
+  button.hitung {
+    width: 100%; background: var(--accent); color: var(--bg); border: none;
+    padding: 12px; cursor: pointer; font-weight: bold; font-size: 13px; margin-top: 10px;
+    letter-spacing: 1px; transition: 0.2s;
+  }
+  button.hitung:hover { background: #ff6666; transform: scale(0.99); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);}
+
+  /* HASIL */
+  .hasil {
+    background: transparent; padding: 12px; border-left: 2px solid var(--accent);
+    margin-top: 15px; font-size: 15px; word-break: break-all; animation: fadeIn 0.5s; color: #4ade80;
+  }
+  .hasil.error { border-left-color: #ff0000; color: #ff0000; }
+
+  /* ANIMASI */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>MSB // CYBERTOOLS</h1>
+  <p class="subtitle">CRIMSON EDITION // 10 UTILITIES</p>
+
+  <!-- MENU KATEGORI -->
+  <div class="kategori">
+    <button class="btn-kat active" onclick="filterKategori('semua', this)">[ ALL ]</button>
+    <button class="btn-kat" onclick="filterKategori('math', this)">[ MATH ]</button>
+    <button class="btn-kat" onclick="filterKategori('sys', this)">[ SYSTEM ]</button>
+    <button class="btn-kat" onclick="filterKategori('text', this)">[ TEXT ]</button>
+  </div>
+
+  <!-- 1. KECEPATAN -->
+  <div id="math" class="tool-card active">
+    <h2>01 // KECEPATAN (v = s/t)</h2>
+    <div class="input-row">
+      <div class="input-group"><label>Jarak (m)</label><input type="number" id="m-v-s" placeholder="0"></div>
+      <div class="input-group"><label>Waktu (s)</label><input type="number" id="m-v-t" placeholder="0"></div>
+    </div>
+    <button class="hitung" onclick="hitungV()">EXECUTE</button>
+    <div class="hasil" id="out-v">> Standby...</div>
+  </div>
+
+  <!-- 2. PYTHAGORAS -->
+  <div id="math" class="tool-card active">
+    <h2>02 // PYTHAGORAS (c = √(a²+b²))</h2>
+    <div class="input-row">
+      <div class="input-group"><label>Sisi A</label><input type="number" id="m-py-a" placeholder="0"></div>
+      <div class="input-group"><label>Sisi B</label><input type="number" id="m-py-b" placeholder="0"></div>
+    </div>
+    <button class="hitung" onclick="hitungPy()">EXECUTE</button>
+    <div class="hasil" id="out-py">> Standby...</div>
+  </div>
+
+  <!-- 3. LUAS LINGKARAN -->
+  <div id="math" class="tool-card active">
+    <h2>03 // AREA OF CIRCLE (πr²)</h2>
+    <div class="input-group"><label>Radius (r)</label><input type="number" id="m-l-r" placeholder="0"></div>
+    <button class="hitung" onclick="hitungLingkaran()">EXECUTE</button>
+    <div class="hasil" id="out-l">> Standby...</div>
+  </div>
+
+  <!-- 4. SUHU -->
+  <div id="math" class="tool-card active">
+    <h2>04 // CELSIUS CONVERTER</h2>
+    <div class="input-group"><label>Suhu (°C)</label><input type="number" id="m-suhu" placeholder="0"></div>
+    <button class="hitung" onclick="konversiSuhu()">EXECUTE</button>
+    <div class="hasil" id="out-suhu">> Standby...</div>
+  </div>
+
+  <!-- 5. PERSENTASE -->
+  <div id="math" class="tool-card active">
+    <h2>05 // PERCENTAGE</h2>
+    <div class="input-row">
+      <div class="input-group"><label>Nilai</label><input type="number" id="m-p-n" placeholder="0"></div>
+      <div class="input-group"><label>Persen (%)</label><input type="number" id="m-p-p" placeholder="0"></div>
+    </div>
+    <button class="hitung" onclick="hitungPersen()">EXECUTE</button>
+    <div class="hasil" id="out-p">> Standby...</div>
+  </div>
+
+  <!-- 6. BASE64 -->
+  <div id="text" class="tool-card">
+    <h2>06 // BASE64 ENCODER</h2>
+    <textarea id="t-b64-in" rows="2" placeholder="Input text..."></textarea>
+    <div class="input-row">
+      <button class="hitung" onclick="b64('encode')">ENCODE</button>
+      <button class="hitung" onclick="b64('decode')">DECODE</button>
+    </div>
+    <div class="hasil" id="out-b64">> Standby...</div>
+  </div>
+
+  <!-- 7. PASSWORD -->
+  <div id="sys" class="tool-card">
+    <h2>07 // SECURE PASS GENERATOR</h2>
+    <div class="input-group"><label>Length</label><input type="number" id="s-pw-len" value="16"></div>
+    <button class="hitung" onclick="genPw()">GENERATE</button>
+    <div class="hasil" id="out-pw">> Standby...</div>
+  </div>
+
+  <!-- 8. HASHING -->
+  <div id="sys" class="tool-card">
+    <h2>08 // STRING HASHER</h2>
+    <div class="input-group"><label>Text</label><input type="text" id="s-hash-in" placeholder="Text..."></div>
+    <button class="hitung" onclick="simpleHash()">HASH</button>
+    <div class="hasil" id="out-hash">> Standby...</div>
+  </div>
+
+  <!-- 9. KALKULATOR -->
+  <div id="math" class="tool-card">
+    <h2>09 // BASIC CALCULATOR</h2>
+    <div class="input-row">
+      <div class="input-group"><label>Angka 1</label><input type="number" id="m-c-a" placeholder="0"></div>
+      <div class="input-group"><label>Angka 2</label><input type="number" id="m-c-b" placeholder="0"></div>
+    </div>
+    <div class="input-row">
+      <button class="hitung" onclick="calc('+')">+</button>
+      <button class="hitung" onclick="calc('-')">-</button>
+      <button class="hitung" onclick="calc('*')">×</button>
+      <button class="hitung" onclick="calc('/')">÷</button>
+    </div>
+    <div class="hasil" id="out-calc">> Standby...</div>
+  </div>
+
+  <!-- 10. UUID -->
+  <div id="sys" class="tool-card">
+    <h2>10 // UUID GENERATOR</h2>
+    <button class="hitung" onclick="genUuid()">GENERATE UUID</button>
+    <div class="hasil" id="out-uuid">> Standby...</div>
+  </div>
+
+</div>
+
+<script>
+  function filterKategori(kat, btn) {
+    document.querySelectorAll('.btn-kat').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.classList.toggle('active', kat === 'semua' || card.id === kat);
+    });
+  }
+  function val(id) { const x = parseFloat(document.getElementById(id).value); return isNaN(x) ? null : x; }
+  function show(id, text, isErr = false) {
+    const el = document.getElementById(id);
+    el.innerHTML = "> " + text;
+    if (isErr) el.classList.add('error'); else el.classList.remove('error');
+  }
+  function hitungV() {
+    let s = val('m-v-s'), t = val('m-v-t');
+    if(s===null || t===null || t===0) return show('out-v', 'INVALID INPUT!', true);
+    show('out-v', `v = ${(s/t).toFixed(2)} m/s`);
+  }
+  function hitungPy() {
+    let a = val('m-py-a'), b = val('m-py-b');
+    if(a===null || b===null) return show('out-py', 'INVALID INPUT!', true);
+    show('out-py', `c = ${Math.sqrt(a*a + b*b).toFixed(2)}`);
+  }
+  function hitungLingkaran() {
+    let r = val('m-l-r');
+    if(r===null) return show('out-l', 'INVALID INPUT!', true);
+    show('out-l', `Luas = ${(Math.PI * r * r).toFixed(2)}`);
+  }
+  function konversiSuhu() {
+    let c = val('m-suhu');
+    if(c===null) return show('out-suhu', 'INVALID INPUT!', true);
+    let f = (c * 9/5) + 32;
+    let k = c + 273.15;
+    show('out-suhu', `F: ${f.toFixed(1)}° | K: ${k.toFixed(2)}K`);
+  }
+  function hitungPersen() {
+    let n = val('m-p-n'), p = val('m-p-p');
+    if(n===null || p===null) return show('out-p', 'INVALID INPUT!', true);
+    show('out-p', `${p}% of ${n} = ${((n*p)/100).toFixed(2)}`);
+  }
+  function b64(mode) {
+    let input = document.getElementById('t-b64-in').value;
+    try {
+      if(mode === 'encode') show('out-b64', btoa(input));
+      else show('out-b64', atob(input));
+    } catch(e) { show('out-b64', 'DECODE ERROR!', true); }
+  }
+  function genPw() {
+    let len = parseInt(document.getElementById('s-pw-len').value) || 16;
+    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    let pw = "";
+    for (let i = 0; i < len; i++) pw += chars.charAt(Math.floor(Math.random() * chars.length));
+    show('out-pw', pw);
+  }
+  function simpleHash() {
+    let str = document.getElementById('s-hash-in').value;
+    let hash = 0;
+    if (str.length === 0) return show('out-hash', 'EMPTY STRING!', true);
+    for (let i = 0; i < str.length; i++) {
+      let char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    show('out-hash', Math.abs(hash).toString(16).padStart(8, '0'));
+  }
+  function calc(op) {
+    let a = val('m-c-a'), b = val('m-c-b');
+    if(a===null || b===null) return show('out-calc', 'INVALID INPUT!', true);
+    let res = 0;
+    if(op === '+') res = a + b;
+    if(op === '-') res = a - b;
+    if(op === '*') res = a * b;
+    if(op === '/') {
+      if(b === 0) return show('out-calc', 'DIV BY ZERO!', true);
+      res = a / b;
+    }
+    show('out-calc', `Result = ${res}`);
+  }
+  function genUuid() {
+    show('out-uuid', 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    }));
+  }
+</script>
+</body>
+</html>
