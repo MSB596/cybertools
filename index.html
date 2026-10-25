@@ -16,7 +16,7 @@
   .ai-box { background: rgba(20,0,0,0.8); border: 1px dashed #ef4444; padding: 20px; margin-bottom: 20px; text-align: center; }
   .ai-box p { font-size: 13px; color: #aa8888; margin-bottom: 10px; }
   input[type="file"] { display: none; }
-  .btn-upload { background: #ef4444; color: #0a0000; padding: 12px 20px; cursor: pointer; font-weight: bold; font-size: 14px; border: none; display: inline-block;}
+  .btn-upload { background: #ef4444; color: #0a0000; padding: 12px 20px; cursor: pointer; font-weight: bold; font-size: 14px; border: none; display: inline-block; border-radius: 5px;}
   .btn-upload:hover { background: #ff6666; }
   .ai-result { margin-top: 15px; font-size: 14px; color: #4ade80; text-align: left; white-space: pre-wrap; background: rgba(0,0,0,0.5); padding: 15px; border-left: 2px solid #4ade80; display: none;}
   .ai-result.error { border-left-color: #ff0000; color: #ff0000; }
@@ -62,8 +62,8 @@
 </div>
 
 <script>
-  // ⚠️ PASTE API KEY LU DI ANTARA TANDA KUTIP DI BAWAH INI ⚠️
-  const GEMINI_API_KEY = "";
+  // ⚠️ MASUKIN API KEY LU DI SINI (YG DIAWALI AQ. ATAU AIza) ⚠️
+  const GEMINI_API_KEY = "AQ.Ab8RN6Iwqs6lsoQTEVuJkmxoiTtWZ-SzvCbt2HvBQ2-wJZIWwg";
   
   async function tanyaAI(event) {
     const file = event.target.files[0];
@@ -71,29 +71,47 @@
     
     const output = document.getElementById('aiOutput');
     output.style.display = 'block';
-    output.innerHTML = "⏳ Gambar diterima! Sedang diproses...";
+    output.classList.remove('error');
+    output.innerHTML = "⏳ AI sedang membaca dan menghitung... (mohon tunggu 5-10 detik)";
 
     try {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        output.innerHTML = "✅ Gambar berhasil dibaca! Ukuran: " + Math.round(file.size/1024) + " KB. <br>Menghubungi AI...";
-        
-        fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent')
-        .then(res => res.json())
-        .then(data => {
-            output.innerHTML = "✅ Sistem web BERJALAN! <br>Pesan dari Google: <br><b>" + (data.error ? data.error.message : "Sukses") + "</b>";
-        })
-        .catch(err => {
-            output.classList.add('error');
-            output.innerHTML = "❌ Gagal konek ke Google. Error: " + err.message;
-        });
-      };
       reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64Data = reader.result.split(',')[1];
+        const mimeType = file.type;
+        
+        const payload = {
+          contents: [{
+            parts: [
+              { text: "Kamu adalah guru fisika. Baca soal di gambar ini, lalu berikan jawaban yang benar beserta rumus dan langkah-langkah pengerjaannya secara singkat dan jelas." },
+              { inline_data: { mime_type: mimeType, data: base64Data } }
+            ]
+          }]
+        };
+
+        // Pake model gemini-1.5-flash dan API Key di Header (sesuai format baru)
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-goog-api-key': GEMINI_API_KEY
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+          output.classList.add('error');
+          output.innerHTML = "❌ Error API: " + data.error.message;
+        } else {
+          output.innerHTML = "🤖 <b>Jawaban AI:</b><br><br>" + data.candidates[0].content.parts[0].text;
+        }
+      };
     } catch (err) {
       output.classList.add('error');
-      output.innerHTML = "❌ Error di JavaScript: " + err.message;
-    }
-}
+      output.innerHTML = "❌ Gagal memproses gambar.";
     }
   }
 
